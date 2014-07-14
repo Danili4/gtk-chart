@@ -2,7 +2,7 @@
 
 void _setup_chart(GtkAllocation loc);
 void _draw_background(cairo_t* cr);
-void _draw_axis(cairo_t* cr);
+void _draw_axis(cairo_t* cr, const char* axisX, const char* axisY);
 void _draw_dashed_grid(cairo_t* cr);
 
 static rect_t rect;
@@ -12,11 +12,13 @@ static rect_t disp;
 
 gboolean on_draw_event(GtkWidget* widget, cairo_t* cr, gpointer user_data)
 {
+const char* axisY="Axis Y1";
+const char* axisX="Axis XX";
 GtkAllocation loc;
 gtk_widget_get_allocation(widget, &loc);
 _setup_chart(loc);
 _draw_background(cr);
-_draw_axis(cr);
+_draw_axis(cr, axisX, axisY);
 _draw_dashed_grid(cr);
 
 return FALSE;
@@ -52,12 +54,10 @@ axis.x=60.5, axis.y=40.5, axis.width=rect.width-80.5, axis.height=rect.height-75
 disp.x=loc.x, disp.y=loc.y, disp.width=loc.width, disp.height=loc.height;
 }
 
-void _draw_axis(cairo_t* cr)
+void _draw_axis(cairo_t* cr, const char* axisX, const char* axisY)
 {
 cairo_text_extents_t extents;
 double text_length;
-char* axisY="Axis Y";
-char* axisX="Axis X";
 cairo_set_line_width(cr, 0.15);
 cairo_set_source_rgb(cr, 0.9, 0.9, 1.0);
 cairo_rectangle(cr, axis.x, axis.y, axis.width, axis.height);
