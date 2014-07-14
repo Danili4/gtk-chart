@@ -26,7 +26,7 @@ void _draw_dashed_grid(cairo_t* cr)
 {
 int i;
 cairo_set_source_rgb(cr, 1.0, 1.0, 1.0);
-cairo_set_line_width(cr, 0.1);
+cairo_set_line_width(cr, 1.0);
 static const double dashed[]={2.0};
 cairo_set_dash(cr, dashed, 1, 0);
 for(i=1;;i++)
@@ -47,8 +47,8 @@ cairo_stroke(cr);
 
 void _setup_chart(GtkAllocation loc)
 {
-rect.x=5, rect.y=5, rect.width=loc.width-10, rect.height=loc.height-10;
-axis.x=60, axis.y=40, axis.width=rect.width-80, axis.height=rect.height-75;
+rect.x=5.5, rect.y=5.5, rect.width=loc.width-10.5, rect.height=loc.height-10.5;
+axis.x=60.5, axis.y=40.5, axis.width=rect.width-80.5, axis.height=rect.height-75.5;
 disp.x=loc.x, disp.y=loc.y, disp.width=loc.width, disp.height=loc.height;
 }
 
