@@ -4,6 +4,7 @@ void _setup_chart(GtkAllocation loc);
 void _draw_background(cairo_t* cr);
 void _draw_axis(cairo_t* cr, const char* axisX, const char* axisY);
 void _draw_dashed_grid(cairo_t* cr);
+void _draw_line(cairo_t* cr);
 
 static rect_t rect;
 static rect_t axis;
@@ -20,6 +21,7 @@ _setup_chart(loc);
 _draw_background(cr);
 _draw_axis(cr, axisX, axisY);
 _draw_dashed_grid(cr);
+_draw_line(cr);
 
 return FALSE;
 }
@@ -85,4 +87,28 @@ cairo_pattern_add_color_stop_rgba(pat, 1.0, 0.0, 0.0, 0.0, 0.9);
 cairo_set_source(cr, pat);
 cairo_rectangle(cr, rect.x, rect.y, rect.width, rect.height);
 cairo_fill(cr);
+}
+
+void _draw_line(cairo_t* cr) {
+cairo_surface_t *surface, *target;
+cairo_t* ctx;
+target=cairo_get_target(cr);
+surface=cairo_surface_create_similar(target, CAIRO_CONTENT_COLOR_ALPHA,
+					 disp.width, disp.height);
+if(cairo_surface_status(surface)!=CAIRO_STATUS_SUCCESS) return;
+ctx=cairo_create(surface);
+if(1) {
+cairo_set_source_rgb(ctx, 1.0, 0.0, 0.0);
+cairo_set_line_width(ctx, 2.0);
+cairo_move_to(ctx, 0.0, 900.0);
+cairo_line_to(ctx,900.0, 0.0);
+cairo_stroke(ctx);
+cairo_set_source_surface(cr, surface, 0.0, 0.0);
+cairo_rectangle(cr, axis.x, axis.y, axis.width, axis.height);
+cairo_save(cr);
+cairo_clip(cr);
+cairo_paint(cr);
+cairo_restore(cr);
+}
+
 }
