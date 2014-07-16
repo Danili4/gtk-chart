@@ -1,6 +1,7 @@
 #include "chart.h"
 
-void _setup_chart(GtkAllocation loc);
+void _setup_chart(cairo_t* cr, GtkAllocation loc);
+void _destroy_chart();
 void _draw_background(cairo_t* cr);
 void _draw_axis(cairo_t* cr, const char* axisX, const char* axisY);
 void _draw_dashed_grid(cairo_t* cr);
@@ -9,6 +10,8 @@ void _draw_line(cairo_t* cr);
 static rect_t rect;
 static rect_t axis;
 static rect_t disp;
+static cairo_surface_t *surface, *target;
+static cairo_t* ctx;
 
 
 gboolean on_draw_event(GtkWidget* widget, cairo_t* cr, gpointer user_data)
@@ -17,12 +20,12 @@ const char* axisY="Axis Y1";
 const char* axisX="Axis XX";
 GtkAllocation loc;
 gtk_widget_get_allocation(widget, &loc);
-_setup_chart(loc);
+_setup_chart(cr, loc);
 _draw_background(cr);
 _draw_axis(cr, axisX, axisY);
 _draw_dashed_grid(cr);
 _draw_line(cr);
-
+_destroy_chart();
 return FALSE;
 }
 
@@ -49,11 +52,16 @@ cairo_stroke(cr);
 }
 }
 
-void _setup_chart(GtkAllocation loc)
+void _setup_chart(cairo_t* cr, GtkAllocation loc)
 {
 rect.x=5.5, rect.y=5.5, rect.width=loc.width-10.5, rect.height=loc.height-10.5;
 axis.x=60.5, axis.y=40.5, axis.width=rect.width-80.5, axis.height=rect.height-75.5;
 disp.x=loc.x, disp.y=loc.y, disp.width=loc.width, disp.height=loc.height;
+target=cairo_get_target(cr);
+surface=cairo_surface_create_similar(target, CAIRO_CONTENT_COLOR_ALPHA,
+					 disp.width, disp.height);
+if(cairo_surface_status(surface)!=CAIRO_STATUS_SUCCESS) return;
+ctx=cairo_create(surface);
 }
 
 void _draw_axis(cairo_t* cr, const char* axisX, const char* axisY)
@@ -90,13 +98,7 @@ cairo_fill(cr);
 }
 
 void _draw_line(cairo_t* cr) {
-cairo_surface_t *surface, *target;
-cairo_t* ctx;
-target=cairo_get_target(cr);
-surface=cairo_surface_create_similar(target, CAIRO_CONTENT_COLOR_ALPHA,
-					 disp.width, disp.height);
 if(cairo_surface_status(surface)!=CAIRO_STATUS_SUCCESS) return;
-ctx=cairo_create(surface);
 if(1) {
 cairo_set_source_rgb(ctx, 1.0, 0.0, 0.0);
 cairo_set_line_width(ctx, 2.0);
@@ -111,4 +113,9 @@ cairo_paint(cr);
 cairo_restore(cr);
 }
 
+}
+
+void _destroy_chart() {
+cairo_surface_destroy(surface);
+cairo_destroy(ctx);
 }
