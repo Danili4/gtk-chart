@@ -5,13 +5,15 @@ void _destroy_chart();
 void _draw_background(cairo_t* cr);
 void _draw_axis(cairo_t* cr, const char* axisX, const char* axisY);
 void _draw_dashed_grid(cairo_t* cr);
-void _draw_line(cairo_t* cr);
+void _draw_line(cairo_t* cr, const double* data, int count);
 
 static rect_t rect;
 static rect_t axis;
 static rect_t disp;
 static cairo_surface_t *surface, *target;
 static cairo_t* ctx;
+static const double buf[]= {100.0, 100.0, 200.0, 150.0, 300.0, 200.0, 400.0, 130.0, 500.0, 210.0, 600.0, 500.0};
+static const int num=6;
 
 
 gboolean on_draw_event(GtkWidget* widget, cairo_t* cr, gpointer user_data)
@@ -24,7 +26,7 @@ _setup_chart(cr, loc);
 _draw_background(cr);
 _draw_axis(cr, axisX, axisY);
 _draw_dashed_grid(cr);
-_draw_line(cr);
+_draw_line(cr, (const double*)&buf, num);
 _destroy_chart();
 return FALSE;
 }
@@ -97,13 +99,16 @@ cairo_rectangle(cr, rect.x, rect.y, rect.width, rect.height);
 cairo_fill(cr);
 }
 
-void _draw_line(cairo_t* cr) {
+void _draw_line(cairo_t* cr, const double* data, int count) {
+unsigned int i;
 if(cairo_surface_status(surface)!=CAIRO_STATUS_SUCCESS) return;
 if(1) {
 cairo_set_source_rgb(ctx, 1.0, 0.0, 0.0);
 cairo_set_line_width(ctx, 2.0);
-cairo_move_to(ctx, 0.0, 900.0);
-cairo_line_to(ctx,900.0, 0.0);
+for(i=0;i<=(count*2-4);i+=2) {
+cairo_move_to(ctx, *(data+i), *(data+i+1));
+cairo_line_to(ctx,*(data+i+2), *(data+i+3));
+}
 cairo_stroke(ctx);
 cairo_set_source_surface(cr, surface, 0.0, 0.0);
 cairo_rectangle(cr, axis.x, axis.y, axis.width, axis.height);
@@ -112,7 +117,6 @@ cairo_clip(cr);
 cairo_paint(cr);
 cairo_restore(cr);
 }
-
 }
 
 void _destroy_chart() {

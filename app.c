@@ -1,5 +1,5 @@
 #include "app.h"
-
+#include "chart.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -24,6 +24,8 @@ if( ! gtk_builder_add_from_file( handle->builder, file, &error ))
     gtk_builder_connect_signals( handle->builder, NULL );
 
     g_object_unref( G_OBJECT( handle->builder ) );
+
+    g_signal_connect(G_OBJECT(handle->darea), "draw", G_CALLBACK(on_draw_event), NULL);
 
     gtk_widget_show( handle->window );
 }
