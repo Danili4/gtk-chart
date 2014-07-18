@@ -106,8 +106,8 @@ if(1) {
 cairo_set_source_rgb(ctx, 1.0, 0.0, 0.0);
 cairo_set_line_width(ctx, 2.0);
 for(i=0;i<=(count*2-4);i+=2) {
-cairo_move_to(ctx, *(data+i), *(data+i+1));
-cairo_line_to(ctx,*(data+i+2), *(data+i+3));
+cairo_move_to(ctx, *(data+i), (axis.y+axis.height)-(*(data+i+1)));
+cairo_line_to(ctx,*(data+i+2), (axis.y+axis.height)-(*(data+i+3)));
 }
 cairo_stroke(ctx);
 cairo_set_source_surface(cr, surface, 0.0, 0.0);
