@@ -6,6 +6,7 @@ void _draw_background(cairo_t* cr);
 void _draw_axis(cairo_t* cr, const char* axisX, const char* axisY);
 void _draw_dashed_grid(cairo_t* cr);
 void _draw_line(cairo_t* cr, const double* data, int count);
+void _draw_legend(cairo_t* cr);
 
 static rect_t rect;
 static rect_t axis;
@@ -25,8 +26,11 @@ gtk_widget_get_allocation(widget, &loc);
 _setup_chart(cr, loc);
 _draw_background(cr);
 _draw_axis(cr, axisX, axisY);
+
 _draw_dashed_grid(cr);
+
 _draw_line(cr, (const double*)&buf, num);
+_draw_legend(cr);
 _destroy_chart();
 return FALSE;
 }
@@ -34,6 +38,7 @@ return FALSE;
 void _draw_dashed_grid(cairo_t* cr)
 {
 int i;
+cairo_save(cr);
 cairo_set_source_rgb(cr, 1.0, 1.0, 1.0);
 cairo_set_line_width(cr, 1.0);
 static const double dashed[]={2.0};
@@ -52,6 +57,7 @@ cairo_move_to(cr, axis.x, axis.y+i*40);
 cairo_line_to(cr, axis.x+axis.width, axis.y+i*40);
 cairo_stroke(cr);
 }
+cairo_restore(cr);
 }
 
 void _setup_chart(cairo_t* cr, GtkAllocation loc)
@@ -70,6 +76,7 @@ void _draw_axis(cairo_t* cr, const char* axisX, const char* axisY)
 {
 cairo_text_extents_t extents;
 double text_length;
+cairo_save(cr);
 cairo_set_line_width(cr, 0.15);
 cairo_set_source_rgb(cr, 0.9, 0.9, 1.0);
 cairo_rectangle(cr, axis.x, axis.y, axis.width, axis.height);
@@ -87,20 +94,24 @@ cairo_text_extents(cr, (const char*)axisX, &extents);
 text_length=extents.width/2.0+extents.x_bearing;
 cairo_move_to(cr, axis.x-text_length+(axis.width)/2.0, axis.y+axis.height+20.0);
 cairo_show_text(cr, (const char*)axisX);
+cairo_restore(cr);
 }
 void _draw_background(cairo_t* cr)
 {
 cairo_pattern_t* pat;
+cairo_save(cr);
 pat=cairo_pattern_create_linear(rect.width/2-5,5, rect.width/2-5, rect.height-5);
 cairo_pattern_add_color_stop_rgba(pat, 0.0, 0.0, 0.07, 0.09, 0.5);
 cairo_pattern_add_color_stop_rgba(pat, 1.0, 0.0, 0.0, 0.0, 0.9);
 cairo_set_source(cr, pat);
 cairo_rectangle(cr, rect.x, rect.y, rect.width, rect.height);
 cairo_fill(cr);
+cairo_restore(cr);
 }
 
 void _draw_line(cairo_t* cr, const double* data, int count) {
 unsigned int i;
+
 if(cairo_surface_status(surface)!=CAIRO_STATUS_SUCCESS) return;
 if(1) {
 cairo_set_source_rgb(ctx, 1.0, 0.0, 0.0);
@@ -117,9 +128,30 @@ cairo_clip(cr);
 cairo_paint(cr);
 cairo_restore(cr);
 }
+
 }
 
 void _destroy_chart() {
 cairo_surface_destroy(surface);
 cairo_destroy(ctx);
+}
+
+void _draw_legend(cairo_t* cr) {
+cairo_text_extents_t extents;
+double text_length, text_height;
+static const char* legend1="V:Red";
+cairo_save(cr);
+cairo_set_line_width(cr, 2.0);
+cairo_set_source_rgb(cr, 1.0, 0.0, 0.0);
+cairo_select_font_face(cr, "Courier", CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_BOLD);
+cairo_set_font_size(cr, 10.0);
+cairo_text_extents(cr, (const char*)legend1, &extents);
+text_length=extents.width/2.0+extents.x_bearing;
+text_height=extents.height/2.0+extents.y_bearing;
+cairo_move_to(cr, axis.x+5, axis.y+10.0+text_height/2.0);
+cairo_line_to(cr, axis.x+10.0, axis.y+10.0+text_height/2.0);
+cairo_stroke(cr);
+cairo_move_to(cr, axis.x+15.0, axis.y+10.0);
+cairo_show_text(cr, (const char*)legend1);
+cairo_restore(cr);
 }
