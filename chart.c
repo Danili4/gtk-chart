@@ -52,9 +52,9 @@ cairo_stroke(cr);
 }
 for(i=1;;i++)
 {
-if((axis.y+i*40)>=(axis.y+axis.height)) break;
-cairo_move_to(cr, axis.x, axis.y+i*40);
-cairo_line_to(cr, axis.x+axis.width, axis.y+i*40);
+if((axis.y+axis.height-i*40)<=(axis.y)) break;
+cairo_move_to(cr, axis.x, axis.y+axis.height-i*40);
+cairo_line_to(cr, axis.x+axis.width, axis.y+axis.height-i*40);
 cairo_stroke(cr);
 }
 cairo_restore(cr);
