@@ -1,7 +1,7 @@
 #ifndef __APP_H__
 #define __APP_H__
 
-#include <cairo.h>
+#include <cairo/cairo.h>
 #include <gtk/gtk.h>
 
 #ifdef __cplusplus
