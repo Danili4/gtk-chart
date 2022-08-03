@@ -14,6 +14,7 @@ struct app_tag {
 GtkBuilder* builder;
 GtkWidget* window;
 GtkWidget* darea;
+GtkWidget* open;
 };
 
 void app_init(int* argc, char*** argv);

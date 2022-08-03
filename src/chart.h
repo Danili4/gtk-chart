@@ -1,13 +1,14 @@
 #ifndef __CHART_H__
 #define __CHART_H__
-#include "app.h"
+#include <cairo/cairo.h>
+#include <gtk/gtk.h>
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-typedef struct rect_tag rect_t;
-struct rect_tag {
+typedef struct rect rect_t;
+struct rect {
   double x, y, width, height;
 };
 

@@ -1,0 +1,5 @@
+cmake_minimum_required(3.20)
+project(gtk-chart VERSION 1.0)
+configure_file(chart-config.h.in chart-config.h)
+add_executable(gtk-chart examples/main.c)
+target_include_directories(gtk-chart PUBLIC "${PROJECT_BINARY_DIR}")
