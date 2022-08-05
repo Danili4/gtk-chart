@@ -30,13 +30,14 @@ void on_open(GtkWidget* widget, gpointer user_data) {
   gtk_widget_destroy(dialog);
 }
 
-void app_ui_from_file(app_t* handle, const char* file) {
+int app_ui_from_file(app_t* handle, const char* file) {
   GError* error=NULL;
   handle->builder=gtk_builder_new();
   if(!gtk_builder_add_from_file(handle->builder, file, &error))
   {
     g_warning("%s", error->message);
     g_free(error);
+    return 1;
   }
   handle->window = GTK_WIDGET(gtk_builder_get_object(handle->builder, "window1"));    
   handle->darea = GTK_WIDGET(gtk_builder_get_object( handle->builder, "drawingarea1"));
@@ -48,6 +49,7 @@ void app_ui_from_file(app_t* handle, const char* file) {
   g_signal_connect(G_OBJECT(handle->darea), "size-allocate", G_CALLBACK(on_realize), NULL);
   g_signal_connect(G_OBJECT(handle->open), "activate", G_CALLBACK(on_open), NULL);*/
   gtk_widget_show(handle->window);
+  return 0;
 }
 
 void app_main_loop() {

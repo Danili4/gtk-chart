@@ -1,0 +1,2 @@
+#define chart_VERSION_MAJOR @gtk-chart_VERSION_MAJOR@
+#define chart_VERSION_MINOR @gtk-chart_VERSION_MINOR@

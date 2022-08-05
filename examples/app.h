@@ -19,7 +19,7 @@ GtkWidget* open;
 
 void app_init(int* argc, char*** argv);
 
-void app_ui_from_file(app_t* handle, const char* file);
+int app_ui_from_file(app_t* handle, const char* file);
 
 void app_main_loop();
 
