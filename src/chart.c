@@ -31,8 +31,8 @@ void on_realize(GtkWidget* widget, gpointer user_data)
 
 gboolean on_draw_event(GtkWidget* widget, cairo_t* cr, gpointer user_data)
 {
-  const char* axisY="Ось Y1";
-  const char* axisX="Ось X1";
+  const char* axisY="Axis Y1";
+  const char* axisX="Axis X1";
   _draw_background(cr);
   _draw_axis(cr, axisX, axisY);
   _draw_dashed_grid(cr);
